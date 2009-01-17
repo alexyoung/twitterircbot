@@ -1,0 +1,26 @@
+h2. Twitter IRC Bot
+
+h3. Usage
+
+  * Install the required gems (twitter4r)
+  * Set the config at the top of the file (owner = your nick, server = irc server address, then one or more twitter accounts)
+  * privmsg with: post, accounts, account name (to switch accounts for posting)
+
+
+h3. Features
+
+  * Gets friend timeline
+  * Post messages
+  * Multiple accounts
+  * Merges accounts so you don't see duplicate messages
+
+h3. Todo
+
+  * Other timelines (yours, @replies)
+  * Direct messages
+  * Help
+  * Search
+
+h3. Credits
+
+The mini IRC library is from Gabriel Gironda which he said he'll clean up and release properly.
