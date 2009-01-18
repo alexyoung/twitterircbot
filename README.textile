@@ -13,7 +13,7 @@ Post a status update:
 
 <pre><code>
 post this is a status update
-</code><pre>
+</code></pre>
 
 List your accounts: <code>accounts</code>
 
