@@ -1,10 +1,22 @@
 #!/usr/bin/env ruby 
 require './init.rb'
 require 'timeout'
-gem 'twitter4r'
+begin
+  gem 'mbbx6spp-twitter4r'
+rescue
+  puts "To get support for @replies, see:"
+  puts "http://wiki.github.com/mbbx6spp/twitter4r/howto-install-github-development-releases"
+  gem 'twitter4r'
+end
 require 'twitter'
 require 'ostruct'
 require 'time'
+
+if ARGV[0]
+  require ARGV[0]
+else
+  puts <<-TEXT
+Run with an argument specifying the location of a configuration file in this format:
 
 BotConfig = OpenStruct.new(:server => 'irc.server.com',
   :owner => 'alex',
@@ -12,6 +24,12 @@ BotConfig = OpenStruct.new(:server => 'irc.server.com',
     OpenStruct.new(:login => 'username', :password => '')
   ]
 )
+
+The configuration file format is ruby.
+Specify as many twitter accounts as you like in an array.
+  TEXT
+  exit
+end
 
 Twitter::Client.configure do |conf|
   conf.protocol = :ssl
@@ -128,8 +146,23 @@ class Bot < RIRC::Client
         end
       end
     elsif response.message =~ /^post/
+      begin
       message = response.message.sub(/^post/, '').strip
-      TwitterHelpers.status :post, @client, message
+      if message.nil? or message.size == 0
+        return_strings << "Error: Please enter a status to post"
+      elsif message.size > 140
+        return_strings << "Error: Please enter a status shorter than 140 characters"
+      else
+        status = TwitterHelpers.status :post, @client, message
+        return_strings << "Status posted: http://twitter.com/#{@client.send(:login)}/status/#{status.id}"
+      end
+      rescue Exception => e
+        p e
+      end
+    elsif response.message =~ /^replies/
+      puts "Getting replies"
+      send_owner_recent_messages :replies
+      return
     end
   
     begin
@@ -142,10 +175,10 @@ class Bot < RIRC::Client
     end
   end
  
-  def send_owner_recent_messages
+  def send_owner_recent_messages(timeline = :friends)
     options = {}
     options[:since] = @last_update if @last_update
-    return_strings = TwitterHelpers.merged_timeline_for(:friends, options)
+    return_strings = TwitterHelpers.merged_timeline_for(timeline, options)
     @last_update = Time.now
     return_strings.each { |string| connection.send.privmsg(BotConfig.owner, ":#{string.strip}") }
   end

@@ -3,9 +3,21 @@ h2. Twitter IRC Bot
 h3. Usage
 
   * Install the required gems (twitter4r)
-  * Set the config at the top of the file (owner = your nick, server = irc server address, then one or more twitter accounts)
+  * Run the script and copy and paste the config file format into a file (~/.twitterirc.rb for example)
+  * Create a config file and run bot.rb with the location of that file, i.e.: ./bot.rb ~/.twitterirc.rb
   * privmsg with: post, accounts, account name (to switch accounts for posting)
 
+h3. Commands
+
+Post a status update:
+
+<pre><code>
+post this is a status update
+</code><pre>
+
+List your accounts: <code>accounts</code>
+
+Switch accounts (for posting): <code>account account_name</code>
 
 h3. Features
 
